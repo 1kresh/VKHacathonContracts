@@ -86,7 +86,9 @@ contract NFTickets is Initializable, ERC1155, Pausable {
 
         tokensClaimed[msg.sender][tokenId] = amount;
         //for not overminting
-        _mint(msg.sender, tokenId, amount - tokensClaimed_, "");
+        unchecked {
+            _mint(msg.sender, tokenId, amount - tokensClaimed_, "");
+        }
     }
 
     /// @dev Set roles to tokenId, can be changed anytime by owner
@@ -136,11 +138,13 @@ contract NFTickets is Initializable, ERC1155, Pausable {
     function getBalances(
         address user
     ) external view returns (uint256[] memory balances) {
-        uint256 maxTokenId_ = maxTokenId;
-        balances = new uint256[](maxTokenId_);
+        unchecked {
+            uint256 maxTokenId_ = maxTokenId;
+            balances = new uint256[](maxTokenId_);
 
-        for (uint256 i; i != maxTokenId_; ++i) {
-            balances[i] = balanceOf[user][i];
+            for (uint256 i; i != maxTokenId_; ++i) {
+                balances[i] = balanceOf[user][i];
+            }
         }
     }
 

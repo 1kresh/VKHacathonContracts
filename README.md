@@ -6,4 +6,4 @@
 
 [@1kresh](https://github.com/1kresh)
 
-Goerli: 0x57BE0aF4F736de1348af5041b74eE4D05Faef872
+Goerli: 0x31CD489116aC1547d8cb25719c52C6949da16EF0
