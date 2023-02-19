@@ -1,12 +1,18 @@
 {
 	"compiler": {
-		"version": "0.8.17+commit.8df45f5f"
+		"version": "0.8.18+commit.87f61d96"
 	},
 	"language": "Solidity",
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "alreadyClaimed",
+						"type": "uint256"
+					}
+				],
 				"name": "AlreadyClaimed",
 				"type": "error"
 			},
@@ -18,6 +24,11 @@
 			{
 				"inputs": [],
 				"name": "ImproperProof",
+				"type": "error"
+			},
+			{
+				"inputs": [],
+				"name": "TooBigTokenId",
 				"type": "error"
 			},
 			{
@@ -88,6 +99,64 @@
 					}
 				],
 				"name": "Paused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "maxTokenId_",
+						"type": "uint256"
+					}
+				],
+				"name": "SetMaxTokenId",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "merkleRoot_",
+						"type": "bytes32"
+					}
+				],
+				"name": "SetMerkleRoot",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "tokenId_",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256[]",
+						"name": "roleIds_",
+						"type": "uint256[]"
+					}
+				],
+				"name": "SetRoleIds",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "startDate_",
+						"type": "uint256"
+					}
+				],
+				"name": "SetStartDate",
 				"type": "event"
 			},
 			{
@@ -255,6 +324,11 @@
 						"internalType": "uint256",
 						"name": "tokenId",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
 					}
 				],
 				"name": "claim",
@@ -278,27 +352,36 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint256",
-						"name": "cursor",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
 					}
 				],
-				"name": "getMintedTokenIds",
+				"name": "getBalances",
 				"outputs": [
 					{
 						"internalType": "uint256[]",
-						"name": "tokenIds",
+						"name": "balances",
 						"type": "uint256[]"
-					},
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "newCursor",
+						"name": "tokenId",
 						"type": "uint256"
+					}
+				],
+				"name": "getRoleIds",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "rolesIds_",
+						"type": "uint256[]"
 					}
 				],
 				"stateMutability": "view",
@@ -348,6 +431,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "maxTokenId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "merkleRoot",
 				"outputs": [
 					{
@@ -387,6 +483,25 @@
 						"internalType": "bool",
 						"name": "",
 						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "roleId",
+						"type": "uint256"
+					}
+				],
+				"name": "roleURI",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "roleURI_",
+						"type": "string"
 					}
 				],
 				"stateMutability": "view",
@@ -479,12 +594,56 @@
 			{
 				"inputs": [
 					{
+						"internalType": "uint256",
+						"name": "maxTokenId_",
+						"type": "uint256"
+					}
+				],
+				"name": "setMaxTokenId",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "bytes32",
 						"name": "merkleRoot_",
 						"type": "bytes32"
 					}
 				],
 				"name": "setMerkleRoot",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokenId_",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256[]",
+						"name": "roleIds_",
+						"type": "uint256[]"
+					}
+				],
+				"name": "setRoleIds",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "startDate_",
+						"type": "uint256"
+					}
+				],
+				"name": "setStartDate",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -525,16 +684,21 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "",
+						"name": "user",
 						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenId",
+						"type": "uint256"
 					}
 				],
-				"name": "ticketClaimed",
+				"name": "tokensClaimed",
 				"outputs": [
 					{
-						"internalType": "bool",
-						"name": "",
-						"type": "bool"
+						"internalType": "uint256",
+						"name": "numberClaimed",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -551,7 +715,7 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "id",
+						"name": "tokenId",
 						"type": "uint256"
 					}
 				],
@@ -568,10 +732,51 @@
 			}
 		],
 		"devdoc": {
+			"events": {
+				"Initialized(uint8)": {
+					"details": "Triggered when the contract has been initialized or reinitialized."
+				},
+				"Paused(address)": {
+					"details": "Emitted when the pause is triggered by `account`."
+				},
+				"Unpaused(address)": {
+					"details": "Emitted when the pause is lifted by `account`."
+				}
+			},
 			"kind": "dev",
 			"methods": {
+				"claim(bytes32[],uint256,uint256)": {
+					"details": "Claim function ordinary callled by user through our app"
+				},
+				"getBalances(address)": {
+					"details": "get Balances of all tokens that user have"
+				},
+				"getRoleIds(uint256)": {
+					"details": "Return roles set to tokenId"
+				},
+				"pause()": {
+					"details": "Optional pausing of contract"
+				},
 				"paused()": {
 					"details": "Returns true if the contract is paused, and false otherwise."
+				},
+				"roleURI(uint256)": {
+					"details": "Return roleURI of choosen roleId"
+				},
+				"setMaxTokenId(uint256)": {
+					"details": "Set MaxTokenId in our event"
+				},
+				"setMerkleRoot(bytes32)": {
+					"details": "Set MerkleTreeProof each change in Merkletree"
+				},
+				"setRoleIds(uint256,uint256[])": {
+					"details": "Set roles to tokenId, can be changed anytime by owner"
+				},
+				"setStartDate(uint256)": {
+					"details": "Set Start date"
+				},
+				"uri(uint256)": {
+					"details": "Return tokenURI of choosen tokenId"
 				}
 			},
 			"version": 1
@@ -584,9 +789,9 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/src/NFTickets.sol": "NFTickets"
+			"src/NFTickets.sol": "NFTickets"
 		},
-		"evmVersion": "london",
+		"evmVersion": "paris",
 		"libraries": {},
 		"metadata": {
 			"bytecodeHash": "ipfs"
@@ -595,10 +800,13 @@
 			"enabled": true,
 			"runs": 200
 		},
-		"remappings": []
+		"remappings": [
+			":ds-test/=lib/forge-std/lib/ds-test/src/",
+			":forge-std/=lib/forge-std/src/"
+		]
 	},
 	"sources": {
-		"contracts/lib/openzeppelin-contracts.git/contracts/proxy/Clones.sol": {
+		"lib/openzeppelin-contracts.git/contracts/proxy/Clones.sol": {
 			"keccak256": "0xc02061f2a10a957cc6681e58216e71bcc624d00dd6edab8fbcc5dcd6b24a2825",
 			"license": "MIT",
 			"urls": [
@@ -606,7 +814,7 @@
 				"dweb:/ipfs/QmVgBvkGn1CxHPC4SJfauM82aUSvUKRFqDtrXiz29HL9u3"
 			]
 		},
-		"contracts/lib/openzeppelin-contracts.git/contracts/proxy/utils/Initializable.sol": {
+		"lib/openzeppelin-contracts.git/contracts/proxy/utils/Initializable.sol": {
 			"keccak256": "0x254f9238c717ea74a1af05d4e24de286d55db8df859c60b66fac388eb53bc46e",
 			"license": "MIT",
 			"urls": [
@@ -614,7 +822,7 @@
 				"dweb:/ipfs/QmXyohPQgyZR4y6YZ2yrfEo5tv5PVSiSmkdVrwCnZTc7KN"
 			]
 		},
-		"contracts/lib/openzeppelin-contracts.git/contracts/security/Pausable.sol": {
+		"lib/openzeppelin-contracts.git/contracts/security/Pausable.sol": {
 			"keccak256": "0x0b7aadc930e970256fbc353a8f5081e217ac0b1443e3d317cf4cb4cdf2445e3e",
 			"license": "MIT",
 			"urls": [
@@ -622,7 +830,7 @@
 				"dweb:/ipfs/QmUoEoGEDs4sq7pbSS1G4asybFW1B4jJ4YjExM39a34BhX"
 			]
 		},
-		"contracts/lib/openzeppelin-contracts.git/contracts/utils/Address.sol": {
+		"lib/openzeppelin-contracts.git/contracts/utils/Address.sol": {
 			"keccak256": "0x9d0843efe7418f685e662378051ca0572b56e8ed4e87b97197fb535839d0e2f8",
 			"license": "MIT",
 			"urls": [
@@ -630,7 +838,7 @@
 				"dweb:/ipfs/QmeKRcBH8LegzqrtdTtEhZLyYeb7PFkAtChNbLA3fTkbKW"
 			]
 		},
-		"contracts/lib/openzeppelin-contracts.git/contracts/utils/Context.sol": {
+		"lib/openzeppelin-contracts.git/contracts/utils/Context.sol": {
 			"keccak256": "0x81d5fc973a522c8909d60be6a201869d46aa47b030b8813f60616404628c2b94",
 			"license": "MIT",
 			"urls": [
@@ -638,7 +846,7 @@
 				"dweb:/ipfs/QmRkhUYUUgRZ2QYJjmtQct2ubyYwS3bdUMhbuFYM12VfYn"
 			]
 		},
-		"contracts/lib/solady.git/src/utils/LibString.sol": {
+		"lib/solady.git/src/utils/LibString.sol": {
 			"keccak256": "0x52ad1ebb093ff4510b9b09da39f08a9a209ce6a398d87c54279b221c06f9767b",
 			"license": "MIT",
 			"urls": [
@@ -646,7 +854,7 @@
 				"dweb:/ipfs/QmX8coaBALnWqsxDtuAbRLwThqDYr93C8ddSxb8trXPMMr"
 			]
 		},
-		"contracts/lib/solmate.git/src/auth/Owned.sol": {
+		"lib/solmate.git/src/auth/Owned.sol": {
 			"keccak256": "0x32f4ee8fa19c888b9983285c717ea6a846ad83047a60fbd77f68a3f2693ddb21",
 			"license": "AGPL-3.0-only",
 			"urls": [
@@ -654,7 +862,7 @@
 				"dweb:/ipfs/Qmea5UbNPk8arMYS7NSRn5rjXLV5RWUMyQHLG8q6jufaNS"
 			]
 		},
-		"contracts/lib/solmate.git/src/tokens/ERC1155.sol": {
+		"lib/solmate.git/src/tokens/ERC1155.sol": {
 			"keccak256": "0x1879bb8610ccabbe85e4dca1608d26b6d63cfdedf84b4f03a986fd8947b65eb4",
 			"license": "AGPL-3.0-only",
 			"urls": [
@@ -662,7 +870,7 @@
 				"dweb:/ipfs/QmcCqakjWfsSzAJFLanfUwChHrLNvaqX1XeAdGZD97XdKb"
 			]
 		},
-		"contracts/lib/solmate.git/src/utils/MerkleProofLib.sol": {
+		"lib/solmate.git/src/utils/MerkleProofLib.sol": {
 			"keccak256": "0x9b947537522a9894fc95aa6f6e1dec32da6689152599d2104484cbd69637bfaf",
 			"license": "MIT",
 			"urls": [
@@ -670,20 +878,20 @@
 				"dweb:/ipfs/QmZriuh4hAbjoDnzxDKR61ugYZGmve258YBxwvKb9rz2Jq"
 			]
 		},
-		"contracts/src/NFTickets.sol": {
-			"keccak256": "0xbf50f6cfbc82ed7112d2f9bdbd4380993fb9405711eda8e446531b3e9290b912",
+		"src/NFTickets.sol": {
+			"keccak256": "0x437ff1c9f649d711b7b889a93c041d246123e5ea04231ede257f70f164fa4aba",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://f860c5d1607ca36f985af2598e1508c20d5a4974614b068a458c4c664a85b863",
-				"dweb:/ipfs/QmeCJ2KtTxnGoTy4Auxktw9bpLyFr6bjdo8PstqMJTuafN"
+				"bzz-raw://00c22fec27de2fdf22b7c3647757cba196d625a8e1785e67cff0db254988327d",
+				"dweb:/ipfs/QmYABofpDLR7dBN9FakURsjEViSH5hwhSmBNqdVvx3whW1"
 			]
 		},
-		"contracts/src/NFTicketsFactory.sol": {
-			"keccak256": "0xb3fa4f5eef90cf97e52b260c9e4d9d8be9aa671a3e2dd64aa12bfdb08e9692f3",
+		"src/NFTicketsFactory.sol": {
+			"keccak256": "0x86a471e000f0f1e2676ce34b450cf457fff1034a059eb17686b4c7d79e8f783e",
 			"license": "UNLICENSED",
 			"urls": [
-				"bzz-raw://7cc3ee9a27b21f85a734a9d8c1336fdfcc92130e6e8eccd28a8767c131d21fa5",
-				"dweb:/ipfs/QmNV7VnQzQx9Gn5bhR2ReMxBfAPzkSnLb3xFoHmuBSpNUj"
+				"bzz-raw://4e8c6c595ecab9e6df52e7c2798ae817a1fefaa2a915f48d2e44069d214784ae",
+				"dweb:/ipfs/QmVW5NQsi6kw1AW3tVTmrmDEPgWKEstDeY9oFrB28DCHZe"
 			]
 		}
 	},
